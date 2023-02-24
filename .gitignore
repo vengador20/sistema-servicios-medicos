@@ -1,0 +1,10 @@
+# Ignora archivos del sistema
+.DS_store
+
+# node modules
+./frontend/node_modules
+
+#variable de entorno
+*.env
+
+
