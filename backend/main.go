@@ -20,29 +20,10 @@ func main() {
 
 	app.Use(recover.New())
 
-	// env, err := config.GetEnviroment()
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// //insertamos la variable de entorno
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
 	defer cancel()
-
-	// db, err := database.NewMongodb()
-
-	// defer db.Disconnect(ctx)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-
-	// route := routers.Router{
-	// 	Db: db,
-	// }
-	db, err := database.Connect() //NewMongodb()
+	db, err := database.Connect()
 
 	if err != nil {
 		fmt.Println(err)

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/vengador20/sistema-servicios-medicos/controllers"
 	"github.com/vengador20/sistema-servicios-medicos/database"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -17,6 +18,9 @@ type Router struct {
 
 func (r *Router) Router(router fiber.Router) {
 
+	controller := controllers.Controllers{
+		Client: r.Db,
+	}
 	router.Get("/hola", func(c *fiber.Ctx) error {
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
@@ -50,4 +54,6 @@ func (r *Router) Router(router fiber.Router) {
 
 		return c.JSON(&users)
 	})
+
+	router.Post("/login", controller.Login)
 }

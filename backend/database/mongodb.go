@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 
 	"github.com/vengador20/sistema-servicios-medicos/config"
@@ -11,10 +10,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	once sync.Once
-	mg   *Mongodb
-)
+// var (
+// 	once sync.Once
+// 	mg   *Mongodb
+// )
 
 type Mongodb struct {
 	Client *mongo.Client
