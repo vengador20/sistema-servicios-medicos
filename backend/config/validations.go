@@ -17,7 +17,11 @@ var (
 	validate *validator.Validate
 )
 
-func ValidateUser(user *models.User) ([]string, error) {
+type UserT interface {
+	*models.UserRegister | *models.UserLogin
+}
+
+func ValidateUser[userT UserT](user userT) ([]string, error) {
 	//validate := validator.New()
 
 	enLocate := en.New()

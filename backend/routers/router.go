@@ -56,4 +56,6 @@ func (r *Router) Router(router fiber.Router) {
 	})
 
 	router.Post("/login", controller.Login)
+
+	router.Post("/register", controller.RegisterUser)
 }

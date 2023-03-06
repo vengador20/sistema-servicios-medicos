@@ -10,32 +10,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// var (
-// 	once sync.Once
-// 	mg   *Mongodb
-// )
-
 type Mongodb struct {
 	Client *mongo.Client
 	//url string
 }
 
-// nueva conexión a Mongodb
+// crea una nueva conexión a Mongodb
 func Connect() (*mongo.Client, error) {
-	// env, err := config.GetEnviroment()
-
-	// once.Do(func() {
-	// 	mg = &Mongodb{
-	// 		url: env,
-	// 	}
-	// })
-
-	// if err != nil {
-	// 	return nil, err
-	// }
-
-	// return mg, nil
-
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 
 	defer cancel()
@@ -57,21 +38,6 @@ func Connect() (*mongo.Client, error) {
 
 }
 
-// func (m *Mongodb) getDatabase() (*mongo.Client, error) {
-// 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-
-// 	defer cancel()
-// 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(m.url))
-
-// 	//retorna un error
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	//retorna la conexión
-// 	return client, nil
-// }
-
 func (m *Mongodb) Collection(name string) (*mongo.Collection, error) {
 	//sistema-medico
 	coll := m.Client.Database("uguia").Collection(name)
@@ -81,7 +47,5 @@ func (m *Mongodb) Collection(name string) (*mongo.Collection, error) {
 }
 
 func (m *Mongodb) Disconnect(ctx context.Context) {
-	//db, _ := m.getDatabase()
-
 	m.Client.Disconnect(ctx)
 }

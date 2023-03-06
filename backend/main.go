@@ -8,15 +8,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/vengador20/sistema-servicios-medicos/config"
 	"github.com/vengador20/sistema-servicios-medicos/database"
 	"github.com/vengador20/sistema-servicios-medicos/routers"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 func main() {
 	app := fiber.New()
 
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
 
 	app.Use(recover.New())
 
@@ -31,49 +33,44 @@ func main() {
 
 	defer db.Disconnect(ctx)
 
-	app.Get("/hola", func(c *fiber.Ctx) error {
-
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-
-		defer cancel()
-
-		//db := database.DbConnect()
-
-		// if err != nil {
-		// 	fmt.Println(err)
-		// }
-
-		mongo := database.Mongodb{
-			Client: db,
-		}
-
-		coll, err := mongo.Collection("users") //db.Collection("users")
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		cur, err := coll.Find(ctx, bson.D{})
-		defer cur.Close(ctx)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		var users []bson.D
-
-		err = cur.All(ctx, &users)
-
-		if err != nil {
-			c.JSON(map[string]string{"error": err.Error()})
-		}
-
-		return c.JSON(&users)
-	})
-
 	rt := routers.Router{
 		Db: db,
 	}
+
+	app.Get("/cookie", func(c *fiber.Ctx) error {
+
+		token, err := config.NewToken("efrain@gmail.com")
+
+		if err != nil {
+			return c.JSON("error")
+		}
+
+		cookie := fiber.Cookie{
+			// Name:     "Authorized",
+			// Value:    token,
+			// Path:     "/",
+			// SameSite: "Strict",
+			// Secure:   true,
+			// HTTPOnly: true,
+			// Expires:  time.Now().Add(time.Hour * 200),
+			Name:     "token",
+			Value:    token,
+			Expires:  time.Now().Add(24 * time.Hour),
+			HTTPOnly: true,
+			Secure:   true,
+			Path:     "/",
+			//cookie.Expires = time.Now().Add(24 * time.Hour)
+			SameSite: "none",
+		}
+
+		c.Cookie(&cookie)
+
+		return c.JSON("cookie")
+	})
+
+	//utilizar middleware personalizado
+	//valida si el jwt no es modificado
+	//app.Use("/api", middleware.ValidateJwt)
 
 	app.Route("/api", rt.Router)
 

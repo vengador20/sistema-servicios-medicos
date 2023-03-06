@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	once sync.Once
-	env  string
+	once          sync.Once
+	env           string
+	privateKeyJwt string
 )
 
 // obtener variable de entorno
@@ -18,6 +19,7 @@ func GetEnviroment() (string, error) {
 	once.Do(func() {
 		err = godotenv.Load()
 		env = os.Getenv("MONGO_URL")
+		privateKeyJwt = os.Getenv("PRIVATEKEY_JWT")
 	})
 
 	if err != nil {
@@ -25,4 +27,8 @@ func GetEnviroment() (string, error) {
 	}
 
 	return env, nil
+}
+
+func PrivateKeyJwt() string {
+	return privateKeyJwt
 }
